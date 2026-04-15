@@ -1,0 +1,176 @@
+﻿<Window x:Class="Manipulator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Manipulator"
+        mc:Ignorable="d"
+        Title="Manipulator" Height="1024" Width="720" WindowState="Maximized">
+    <Grid x:Name="grid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.Column="0" LastChildFill="True" Margin="4">
+            <StackPanel DockPanel.Dock="Top">
+                <Label x:Name="lbFrameTime" FontSize="30">0</Label>
+
+                <ToggleButton x:Name="tbPlayPause" IsChecked="True" HorizontalAlignment="Stretch" Margin="7"
+                              Checked="TbPlayPause_Checked" Unchecked="TbPlayPause_Unchecked">
+                    Pause
+                </ToggleButton>
+
+                <Label x:Name="lbSpeed" Content="Simulation speed: 1.00" />
+                <Slider x:Name="sliderSpeed" Minimum="0" Maximum="10" Value="1" SmallChange="0.1" LargeChange="1"
+                        TickFrequency="1" TickPlacement="BottomRight"
+                        ValueChanged="SliderSpeed_OnValueChanged" />
+
+                <Button Click="btResetClick" Margin="0,10,0,8">Reset</Button>
+
+                <ToggleButton x:Name="btnGraphics" Content="Graphics settings" Width="130" Margin="0,0,0,4"
+                              HorizontalAlignment="Left" />
+                <Popup x:Name="popupGraphics" PlacementTarget="{Binding ElementName=btnGraphics}" Placement="Right"
+                       AllowsTransparency="True" PopupAnimation="Slide" StaysOpen="False"
+                       IsOpen="{Binding IsChecked, ElementName=btnGraphics, Mode=TwoWay}">
+                    <Border Background="LightGray" BorderBrush="Gray" BorderThickness="1" Padding="8" CornerRadius="4">
+                        <StackPanel Width="280">
+                            <Label>Show face:</Label>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                <RadioButton Checked="rbBoth" Margin="0,0,8,0">both</RadioButton>
+                                <RadioButton IsChecked="True" Checked="rbFront" Margin="0,0,8,0">front</RadioButton>
+                                <RadioButton Checked="rbBack">back</RadioButton>
+                            </StackPanel>
+
+                            <ComboBox x:Name="comboResolution" SelectionChanged="ResolutionChanged">
+                                <ComboBoxItem Content="256x256" />
+                                <ComboBoxItem Content="512x512" />
+                                <ComboBoxItem Content="768x768" />
+                                <ComboBoxItem Content="1024x1024" IsSelected="True" />
+                                <ComboBoxItem Content="1920x1080" />
+                                <ComboBoxItem Content="2560x1440" />
+                            </ComboBox>
+
+                            <Label>Background:</Label>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <Label Width="16">R:</Label>
+                                <Slider x:Name="slbgR" Minimum="0" Maximum="255" Value="0" SmallChange="1" LargeChange="10"
+                                        Width="180" TickFrequency="1" TickPlacement="BottomRight"
+                                        ValueChanged="backgroundColorUpdate" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Width="16">G:</Label>
+                                <Slider x:Name="slbgG" Minimum="0" Maximum="255" Value="0" SmallChange="1" LargeChange="10"
+                                        Width="180" TickFrequency="1" TickPlacement="BottomRight"
+                                        ValueChanged="backgroundColorUpdate" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <Label Width="16">B:</Label>
+                                <Slider x:Name="slbgB" Minimum="0" Maximum="255" Value="0" SmallChange="1" LargeChange="10"
+                                        Width="180" TickFrequency="1" TickPlacement="BottomRight"
+                                        ValueChanged="backgroundColorUpdate" />
+                            </StackPanel>
+
+                            <Label>Light:</Label>
+                            <CheckBox x:Name="cbLight" Click="CbLight_OnClick" IsChecked="True">Enable lighting</CheckBox>
+                            <Label>Ambient intensity:</Label>
+                            <Slider x:Name="slAmbientIntensity" Minimum="0" Maximum="1" Value="0.1" SmallChange="0.01" LargeChange="0.1"
+                                    Width="180" TickFrequency="0.1" TickPlacement="BottomRight"
+                                    ValueChanged="slAmbientIntensity_OnValueChanged" />
+
+                            <Label>Light diffuse intensity:</Label>
+                            <Slider x:Name="slLight1Intensity" Minimum="0" Maximum="10" Value="0"
+                                    ValueChanged="SlLight1Intensity_OnValueChanged" />
+
+                            <Label Margin="0,6,0,0">Light position:</Label>
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                <Label Width="20">X:</Label>
+                                <Slider x:Name="slLightPosX" Minimum="-20" Maximum="20" Value="-1"
+                                        Width="180" TickFrequency="1" TickPlacement="BottomRight"
+                                        ValueChanged="SlLightPosition_OnValueChanged" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Width="20">Y:</Label>
+                                <Slider x:Name="slLightPosY" Minimum="-20" Maximum="20" Value="4"
+                                        Width="180" TickFrequency="1" TickPlacement="BottomRight"
+                                        ValueChanged="SlLightPosition_OnValueChanged" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <Label Width="20">Z:</Label>
+                                <Slider x:Name="slLightPosZ" Minimum="-20" Maximum="20" Value="-1"
+                                        Width="180" TickFrequency="1" TickPlacement="BottomRight"
+                                        ValueChanged="SlLightPosition_OnValueChanged" />
+                            </StackPanel>
+
+                            <Label Margin="0,8,0,0">Sphere detail level:</Label>
+                            <Slider x:Name="slSphereDetail" Minimum="0" Maximum="7" Value="3"
+                                    ValueChanged="SlSphereDetail_OnValueChanged" TickFrequency="1" TickPlacement="BottomRight" />
+
+                            <Label>Normals:</Label>
+                            <CheckBox x:Name="cbFakeNormals" Click="CbFakeNormalsSphere_OnClick" IsChecked="True">use fake normals</CheckBox>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+                <Label Margin="0,8,0,2">Model state:</Label>
+                <ToggleButton x:Name="btnParams" Content="Show Parameters" Width="130" Margin="0,0,0,8"
+                              HorizontalAlignment="Left" />
+
+                <Popup x:Name="popupParams" PlacementTarget="{Binding ElementName=btnParams}" Placement="Right"
+                       AllowsTransparency="True" PopupAnimation="Slide" StaysOpen="False"
+                       IsOpen="{Binding IsChecked, ElementName=btnParams, Mode=TwoWay}">
+                    <Border Background="LightGray" BorderBrush="Gray" BorderThickness="1" Padding="8" CornerRadius="4">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True" Width="280" MaxHeight="860">
+                            <StackPanel>
+
+                                <Label x:Name="txtLength1">l1:    1.0</Label>
+                                <Slider x:Name="length1" Minimum="0" Maximum="10" Value="2" Tag="1"
+                                        ValueChanged="Length1_OnValueChanged" />
+                                <Label x:Name="txtLength2">l2:    1.0</Label>
+                                <Slider x:Name="length2" Minimum="0" Maximum="10" Value="2" Tag="2"
+                                        ValueChanged="Length2_OnValueChanged" />
+                                <Label x:Name="txtLength3">l3:    1.0</Label>
+                                <Slider x:Name="length3" Minimum="0" Maximum="10" Value="1.8" Tag="3"
+                                        ValueChanged="Length3_OnValueChanged" />
+                                <Label x:Name="txtLength4">l4:    1.0</Label>
+                                <Slider x:Name="length4" Minimum="0" Maximum="10" Value="1.5" Tag="4"
+                                        ValueChanged="Length4_OnValueChanged" />
+                                <Label x:Name="txtLength5">l5:    1.0</Label>
+                                <Slider x:Name="length5" Minimum="0" Maximum="10" Value="1" Tag="5"
+                                        ValueChanged="Length5_OnValueChanged" />
+                                <Label x:Name="txtLength6">l6:    1.0</Label>
+                                <Slider x:Name="length6" Minimum="0" Maximum="10" Value="0.5" Tag="6"
+                                        ValueChanged="Length6_OnValueChanged" />
+                                <Label x:Name="txtLength7">l7:    1.0</Label>
+                                <Slider x:Name="length7" Minimum="0.2" Maximum="10" Value="0.4" Tag="7"
+                                        ValueChanged="Length7_OnValueChanged" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Popup>
+            </StackPanel>
+
+            <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Label Margin="0,0,0,4">Move aim with keyboard: W/A/S/D, Q/E</Label>
+                    <Label x:Name="txtAimX">Aim x:    1.0</Label>
+                    <Slider x:Name="aimX" Minimum="-10" Maximum="10" Value="-3.5" Tag="1"
+                            AutoToolTipPrecision="4" SmallChange="0.01" LargeChange="1"
+                            ValueChanged="Aim_OnValueChanged" />
+                    <Label x:Name="txtAimY">Aim y:    1.0</Label>
+                    <Slider x:Name="aimY" Minimum="-10" Maximum="10" Value="3" Tag="2"
+                            AutoToolTipPrecision="4" SmallChange="0.01" LargeChange="1"
+                            ValueChanged="Aim_OnValueChanged" />
+                    <Label x:Name="txtAimZ">Aim z:    1.0</Label>
+                    <Slider x:Name="aimZ" Minimum="-10" Maximum="10" Value="2.4" Tag="3"
+                            AutoToolTipPrecision="4" SmallChange="0.01" LargeChange="1"
+                            ValueChanged="Aim_OnValueChanged" />
+
+                    <Button Click="RandomAim" Margin="0,10,0,8">Random position</Button>
+
+                    <Label x:Name="txtResult">Hand position:</Label>
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</Window>
