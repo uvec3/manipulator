@@ -186,16 +186,17 @@ namespace Manipulator
 
                 //evaluate angle between projections of aim and current position of the hand on rotation plane of current joint
                 //within coordinate system associated with current joint (where this joint is the origin)
-                float sin = glm.Cross(O1O7.xy, O1A.xy) / O1A.xy.Length / O1O7.xy.Length;
-                float da = (float)Math.Asin(sin);
+                float dot = glm.Dot(O1A.xy, O1O7.xy);
+                float cross = glm.Cross(O1O7.xy, O1A.xy);
+
+                float da = (float)Math.Acos(dot /O1A.xy.Length / O1O7.xy.Length);
 
                 //in case if hand on this joint (0107==0) or the aim is on this joint(O1A==0) do not rotate this joint on this step
                 if (float.IsNaN(da) || float.IsNegativeInfinity(da) || float.IsPositiveInfinity(da))
                     da = 0;
 
-                float dot = glm.Dot(O1A.xy, O1O7.xy);
-                if (dot < 0)
-                    da = (float)Math.PI - da;
+                if (cross < 0)
+                    da = - da;
 
                 //to move with small steps limit angle change to maxAngle
                 if(da>maxAngle)

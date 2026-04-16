@@ -103,7 +103,7 @@ namespace Manipulator
 
                 using (StreamReader teapotReader = new StreamReader(teapotStream))
                 {
-                    teapot = new Model(teapotReader,new vec4(0.1f,0.3f,1f,1f),cbFakeNormals.IsChecked==true);
+                    teapot = new Model(teapotReader,new vec4(0.1f,0.3f,1f,1f),cbFakeNormals.IsChecked!=true);
                 }
             }
         }
