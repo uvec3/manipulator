@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
-            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+    <Import Project="packages\Costura.Fody.6.1.0-alpha0181\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.6.1.0-alpha0181\build\Costura.Fody.props')" />
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -35,20 +35,23 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="Costura, Version=6.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
+          <HintPath>packages\Costura.Fody.6.1.0-alpha0181\lib\netstandard2.0\Costura.dll</HintPath>
+        </Reference>
         <Reference Include="GlmSharp, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
           <HintPath>packages\GlmSharp.0.9.8\lib\Net45\GlmSharp.dll</HintPath>
         </Reference>
-        <Reference Include="System"/>
-        <Reference Include="System.Core"/>
-        <Reference Include="System.Data"/>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
         <Reference Include="System.Numerics" />
-        <Reference Include="System.Xml"/>
+        <Reference Include="System.Xml" />
         <Reference Include="System.Xaml">
             <RequiredTargetFramework>4.0</RequiredTargetFramework>
         </Reference>
-        <Reference Include="WindowsBase"/>
-        <Reference Include="PresentationCore"/>
-        <Reference Include="PresentationFramework"/>
+        <Reference Include="WindowsBase" />
+        <Reference Include="PresentationCore" />
+        <Reference Include="PresentationFramework" />
     </ItemGroup>
     <ItemGroup>
         <ApplicationDefinition Include="App.xaml">
@@ -98,7 +101,7 @@
         </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
-        <None Include="App.config"/>
+        <None Include="App.config" />
         <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
@@ -106,5 +109,15 @@
         <LogicalName>Manipulator.teapot.obj</LogicalName>
       </EmbeddedResource>
     </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <Import Project="packages\Fody.6.9.1\build\Fody.targets" Condition="Exists('packages\Fody.6.9.1\build\Fody.targets')" />
+    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+      <PropertyGroup>
+        <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+      </PropertyGroup>
+      <Error Condition="!Exists('packages\Fody.6.9.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.9.1\build\Fody.targets'))" />
+      <Error Condition="!Exists('packages\Costura.Fody.6.1.0-alpha0181\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.6.1.0-alpha0181\build\Costura.Fody.props'))" />
+      <Error Condition="!Exists('packages\Costura.Fody.6.1.0-alpha0181\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.6.1.0-alpha0181\build\Costura.Fody.targets'))" />
+    </Target>
+    <Import Project="packages\Costura.Fody.6.1.0-alpha0181\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.6.1.0-alpha0181\build\Costura.Fody.targets')" />
 </Project>
